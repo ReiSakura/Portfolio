@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+import { getCollection } from "astro:content";
+import createSlug from "../lib/createSlug"
+import { Image } from "astro:assets";
+import backgroundImage from '~/../public/background.jpg';
+
+const projects = (await getCollection("project")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const last_projects = projects.slice(0, 3).reverse();
+---
+
+<BaseLayout sideBarActiveItemID="home">
+  <div class="pb-12 mt-5">
+    <div class="text-xl py-1">Hey there 👋</div>
+    <div class="text-5xl font-bold">I'm Jenson</div>
+    <div class="text-3xl py-3 font-bold">Software Engineer</div>
+    <div class="py-2">
+      <text class="text-lg">
+        This site is a showcase of my passion for programming, problem-solving, and continuous learning. Here, you'll find a collection of projects that reflect my skills, creativity, and dedication to technology. Whether it’s web development, software engineering, or exploring new innovations, this portfolio highlights my journey in the ever-evolving tech landscape.
+
+Feel free to explore my work, learn more about my expertise, and connect with me. I'm always excited about new challenges and opportunities to collaborate!
+      </text>
+    </div>
+  </div>
+
+  <Image width={750} height={422} format="jpg" src={backgroundImage} alt={"bgimg"} class="w-full mb-6" />
+
+  <div>
+    <div class="text-3xl w-full font-bold mb-2">My last projects</div>
+  </div>
+
+  {
+    last_projects.map((project) => (
+      <>
+        <HorizontalCard
+          title={project.data.title}
+          img={project.data.thumbnail}
+          desc={project.data.description}
+          url={"/projects/" + createSlug(project.data.title, project.slug)}
+          target="_self"
+          badge={project.data.badge}
+        />
+        <div class="divider my-0" />
+      </>
+    ))
+  }
+</BaseLayout>
